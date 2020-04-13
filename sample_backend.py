@@ -18,6 +18,15 @@ def get_users():
       return subdict
    return users
 
+@app.route('/users/<id>')
+def get_user(id):
+   if id:
+      for user in users['users_list']:
+         if user['id'] == id:
+            return user #return user if found
+      return ({}) #if no user matches id, return empty dict
+   return users #if id not asked for, return all users
+
 # in the form of a JSON object (or python dictionary)
 users = {
    'users_list' :
