@@ -11,11 +11,12 @@ def hello_world():
 def get_users():
    if request.method == 'GET':
        search_username = request.args.get('name') #accessing val of param 'name'
+       search_job = request.args.get('job')
        # if there is a name to search for, only return subdict of users w/ name
-       if search_username:
+       if search_username and search_job:
           subdict = {'users_list' : []} #empty subdict to add to if name match found
           for user in users['users_list']:
-             if user['name'] == search_username:
+             if user['name'] == search_username and user['job'] == search_job:
                 subdict['users_list'].append(user)
           return subdict
        return users
