@@ -1,3 +1,4 @@
+from random import randint
 from flask import Flask
 from flask import request
 from flask import jsonify
@@ -8,6 +9,13 @@ CORS(app) # allow our backend to respond to calls coming from a different origin
 @app.route('/')
 def hello_world():
 	return 'Hello, World!'
+
+# randomly generate a 6-digit string id from tex/viewable ascii chars (33-126)
+def randID():
+    id = ""
+    for i in range(0, 6):
+        id += chr(randint(ord('!'), ord('~')))
+    return id
 
 @app.route('/users', methods=['GET','POST','DELETE'])
 def get_users():
@@ -24,6 +32,7 @@ def get_users():
        return users
    elif request.method == 'POST':
        userToAdd = request.get_json() #get the data/body of the http request
+       userToAdd['id'] = randID()
        users['users_list'].append(userToAdd)
        resp = jsonify(success=True) #set the http response to show success
        resp.status_code = 201 #optionally, you can always set a response code.
