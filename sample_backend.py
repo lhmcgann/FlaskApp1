@@ -26,7 +26,7 @@ def get_users():
        userToAdd = request.get_json() #get the data/body of the http request
        users['users_list'].append(userToAdd)
        resp = jsonify(success=True) #set the http response to show success
-       #resp.status_code = 200 #optionally, you can always set a response code.
+       resp.status_code = 201 #optionally, you can always set a response code.
        # 200 is the default code for a normal response
        return resp
    elif request.method == 'DELETE':
