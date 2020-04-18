@@ -35,11 +35,6 @@ def get_users():
        userToAdd['id'] = randID()
        users['users_list'].append(userToAdd)
        resp = jsonify(userToAdd), 201
-       # resp = jsonify(success=True, data=userToAdd) #set the http response to show success
-       # # print("ADDED" + userToAdd)
-       # # resp.data = userToAdd #return the new user object with the new id
-       # resp.status_code = 201 #optionally, you can always set a response code.
-       # # 200 is the default code for a normal response
        return resp
 
 @app.route('/users/<id>', methods=['GET', 'DELETE'])
