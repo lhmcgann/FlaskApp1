@@ -17,12 +17,12 @@ def randID():
         id += chr(randint(ord('!'), ord('~')))
     return id
 
-@app.route('/users', methods=['GET','POST','DELETE'])
+@app.route('/users', methods=['GET','POST'])
 def get_users():
    if request.method == 'GET':
        search_username = request.args.get('name') #accessing val of param 'name'
        search_job = request.args.get('job')
-       # if there is a name to search for, only return subdict of users w/ name
+       # if there is a name AND a job to search for, only return subdict of users w/ name, job
        if search_username and search_job:
           subdict = {'users_list' : []} #empty subdict to add to if name match found
           for user in users['users_list']:
@@ -38,22 +38,29 @@ def get_users():
        resp.status_code = 201 #optionally, you can always set a response code.
        # 200 is the default code for a normal response
        return resp
-   elif request.method == 'DELETE':
-       userToDelete = request.get_json() #get the data/body of the http request
-       users['users_list'].remove(userToDelete)
-       resp = jsonify(success=True) #set the http response to show success
-       #resp.status_code = 200 #optionally, you can always set a response code.
-       # 200 is the default code for a normal response
-       return resp
 
-@app.route('/users/<id>')
+@app.route('/users/<id>', methods=['GET', 'DELETE'])
 def get_user(id):
-   if id:
-      for user in users['users_list']:
-         if user['id'] == id:
-            return user #return user if found
-      return ({}) #if no user matches id, return empty dict
-   return users #if id not asked for, return all users
+    if request.method == 'GET':
+        if id:
+            for user in users['users_list']:
+                if user['id'] == id:
+                    return user #return user if found
+            return ({}) #if no user matches id, return empty dict
+        return users #if id not asked for, return all users
+    elif request.method == 'DELETE':
+        if id:
+            for user in users['users_list']:
+                if user['id'] == id:
+                    # TODO: delete user
+                    users['users_list'].remove(user)
+                    resp = jsonify(success=True) #set the http response to show success
+                    resp.status_code = 201 #optionally, you can always set a response code.
+                    return resp
+        #if id not asked for or no user id matches, error
+        resp = jsonify(success=False) #set the http response to show failure
+        return resp
+
 
 # in the form of a JSON object (or python dictionary)
 users = {
