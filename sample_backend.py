@@ -1,7 +1,9 @@
 from flask import Flask
 from flask import request
 from flask import jsonify
+from flask_cors import CORS # Cross-Origin Resource Sharing
 app = Flask(__name__)
+CORS(app) # allow our backend to respond to calls coming from a different origin
 
 @app.route('/')
 def hello_world():
