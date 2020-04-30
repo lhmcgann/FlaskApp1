@@ -72,16 +72,20 @@ def get_users():
        search_job = request.args.get('job')
        # if there is a name AND a job to search for, only return subdict of users w/ name, job
        if search_username and search_job:
-          users = find_user_by_name_and_job(search_username, search_job);
+          return find_user_by_name_and_job(search_username, search_job);
        elif search_username:
-          users = find_user_by_name(search_username)
-          # return {"users_list": User().find_by_name(search_username)}
-       return users
+          # users = find_user_by_name(search_username)
+          users = User().find_by_name(search_username)
+       else:
+          users = User().find_all()
+       return {"users_list": users}
    elif request.method == 'POST':
        userToAdd = request.get_json() #get the data/body of the http request
-       userToAdd['id'] = randID()
-       users['users_list'].append(userToAdd)
-       resp = jsonify(userToAdd), 201
+       # userToAdd['id'] = randID()
+       # users['users_list'].append(userToAdd)
+       newUser = User(userToAdd)
+       newUser.save()
+       resp = jsonify(newUser), 201
        return resp
 
 @app.route('/users/<id>', methods=['GET', 'DELETE'])
