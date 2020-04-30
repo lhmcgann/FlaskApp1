@@ -18,6 +18,20 @@ def randID():
         id += chr(randint(ord('!'), ord('~')))
     return id
 
+def find_user_by_name_and_job(name, job):
+    subdict = {'users_list' : []} #empty subdict to add to if name match found
+    for user in users['users_list']:
+       if user['name'] == name and user['job'] == job:
+          subdict['users_list'].append(user)
+    return subdict
+
+def find_user_by_name(name):
+    subdict = {'users_list' : []} #empty subdict to add to if name match found
+    for user in users['users_list']:
+       if user['name'] == name:
+          subdict['users_list'].append(user)
+    return subdict
+
 @app.route('/users', methods=['GET','POST'])
 def get_users():
    if request.method == 'GET':
@@ -25,11 +39,9 @@ def get_users():
        search_job = request.args.get('job')
        # if there is a name AND a job to search for, only return subdict of users w/ name, job
        if search_username and search_job:
-          subdict = {'users_list' : []} #empty subdict to add to if name match found
-          for user in users['users_list']:
-             if user['name'] == search_username and user['job'] == search_job:
-                subdict['users_list'].append(user)
-          return subdict
+          return find_user_by_name_and_job(search_username, search_job);
+       elif search_username:
+          return find_user_by_name(search_username)
        return users
    elif request.method == 'POST':
        userToAdd = request.get_json() #get the data/body of the http request
