@@ -72,7 +72,7 @@ def get_users():
        search_job = request.args.get('job')
        # if there is a name AND a job to search for, only return subdict of users w/ name, job
        if search_username and search_job:
-          return find_user_by_name_and_job(search_username, search_job);
+          users = User().find_by_name_and_job(search_username, search_job);
        elif search_username:
           # users = find_user_by_name(search_username)
           users = User().find_by_name(search_username)
