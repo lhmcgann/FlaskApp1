@@ -26,8 +26,12 @@ class Model(dict):
 
     def remove(self):
         if self._id:
-            self.collection.remove({"_id": ObjectId(self._id)})
+            writeRes = self.collection.remove({"_id": ObjectId(self._id)})
+            print("WRITERESULT NREMOVED: " + str(writeRes))
+            # print("WRITERESULT NREMOVED: " + str(writeRes.nRemoved))
             self.clear()
+            return writeRes['ok'] == 1.0
+            # return not (writeRes.hasWriteError() or writeRes.hasWriteConcernError())
 
 class User(Model):
     db_client = pymongo.MongoClient('localhost', 27017)

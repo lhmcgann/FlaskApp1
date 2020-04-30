@@ -90,19 +90,19 @@ def get_users():
 
 @app.route('/users/<id>', methods=['GET', 'DELETE'])
 def get_user(id):
+    user = User({"_id":id})
     if request.method == 'GET':
-        user = User({"_id":id})
         user.reload()
         return user
     elif request.method == 'DELETE':
-        if id:
-            for user in users['users_list']:
-                if user['id'] == id:
-                    # TODO: delete user
-                    users['users_list'].remove(user)
-                    resp = jsonify(success=True) #set the http response to show success
-                    resp.status_code = 200 #optionally, you can always set a response code.
-                    return resp
+        # if id:
+        #     for user in users['users_list']:
+        #         if user['id'] == id:
+        #             # TODO: delete user
+        #             users['users_list'].remove(user)
+        #             resp = jsonify(success=True) #set the http response to show success
+        #             resp.status_code = 200 #optionally, you can always set a response code.
+        #             return resp
         #if id not asked for or no user id matches, error
-        resp = jsonify(success=False) #set the http response to show failure
+        resp = jsonify(user.remove()) #set the http response to show failure
         return resp
