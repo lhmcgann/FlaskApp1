@@ -104,5 +104,5 @@ def get_user(id):
         #             resp.status_code = 200 #optionally, you can always set a response code.
         #             return resp
         #if id not asked for or no user id matches, error
-        resp = jsonify(user.remove()) #set the http response to show failure
+        resp = jsonify(success=user.remove()), 204 #set the http response to show No Content
         return resp
