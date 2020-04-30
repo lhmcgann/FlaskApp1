@@ -1,3 +1,4 @@
+# see https://github.com/bcdasilv/flask-playground/tree/db-access
 import pymongo
 from bson import ObjectId
 
