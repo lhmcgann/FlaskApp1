@@ -54,7 +54,7 @@ def get_user(id):
                     # TODO: delete user
                     users['users_list'].remove(user)
                     resp = jsonify(success=True) #set the http response to show success
-                    resp.status_code = 201 #optionally, you can always set a response code.
+                    resp.status_code = 200 #optionally, you can always set a response code.
                     return resp
         #if id not asked for or no user id matches, error
         resp = jsonify(success=False) #set the http response to show failure
