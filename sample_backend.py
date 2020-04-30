@@ -91,12 +91,15 @@ def get_users():
 @app.route('/users/<id>', methods=['GET', 'DELETE'])
 def get_user(id):
     if request.method == 'GET':
-        if id:
-            for user in users['users_list']:
-                if user['id'] == id:
-                    return user #return user if found
-            return ({}) #if no user matches id, return empty dict
-        return users #if id not asked for, return all users
+        user = User({"_id":id})
+        user.reload()
+        return user
+        # if id:
+        #     for user in users['users_list']:
+        #         if user['id'] == id:
+        #             return user #return user if found
+        #     return ({}) #if no user matches id, return empty dict
+        # return users #if id not asked for, return all users
     elif request.method == 'DELETE':
         if id:
             for user in users['users_list']:
