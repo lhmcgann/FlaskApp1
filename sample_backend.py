@@ -7,72 +7,6 @@ from flask_cors import CORS # Cross-Origin Resource Sharing
 app = Flask(__name__)
 CORS(app) # allow our backend to respond to calls coming from a different origin
 
-@app.route('/')
-def hello_world():
-	return 'Hello, World!'
-
-# randomly generate a 6-digit string id from tex/viewable ascii chars (33-126)
-def randID():
-    id = ""
-    for i in range(0, 6):
-        id += chr(randint(ord('!'), ord('~')))
-    return id
-
-def find_user_by_name_and_job(name, job):
-    subdict = {'users_list' : []} #empty subdict to add to if name match found
-    for user in users['users_list']:
-       if user['name'] == name and user['job'] == job:
-          subdict['users_list'].append(user)
-    return subdict
-
-def find_user_by_name(name):
-    subdict = {'users_list' : []} #empty subdict to add to if name match found
-    for user in users['users_list']:
-       if user['name'] == name:
-          subdict['users_list'].append(user)
-    return subdict
-
-@app.route('/users', methods=['GET','POST'])
-def get_users():
-   if request.method == 'GET':
-       search_username = request.args.get('name') #accessing val of param 'name'
-       search_job = request.args.get('job')
-       # if there is a name AND a job to search for, only return subdict of users w/ name, job
-       if search_username and search_job:
-          return find_user_by_name_and_job(search_username, search_job);
-       elif search_username:
-          return find_user_by_name(search_username)
-       return users
-   elif request.method == 'POST':
-       userToAdd = request.get_json() #get the data/body of the http request
-       userToAdd['id'] = randID()
-       users['users_list'].append(userToAdd)
-       resp = jsonify(userToAdd), 201
-       return resp
-
-@app.route('/users/<id>', methods=['GET', 'DELETE'])
-def get_user(id):
-    if request.method == 'GET':
-        if id:
-            for user in users['users_list']:
-                if user['id'] == id:
-                    return user #return user if found
-            return ({}) #if no user matches id, return empty dict
-        return users #if id not asked for, return all users
-    elif request.method == 'DELETE':
-        if id:
-            for user in users['users_list']:
-                if user['id'] == id:
-                    # TODO: delete user
-                    users['users_list'].remove(user)
-                    resp = jsonify(success=True) #set the http response to show success
-                    resp.status_code = 200 #optionally, you can always set a response code.
-                    return resp
-        #if id not asked for or no user id matches, error
-        resp = jsonify(success=False) #set the http response to show failure
-        return resp
-
-
 # in the form of a JSON object (or python dictionary)
 users = {
    'users_list' :
@@ -104,3 +38,70 @@ users = {
       }
    ]
 }
+
+@app.route('/')
+def hello_world():
+	return 'Hello, World!'
+
+# randomly generate a 6-digit string id from tex/viewable ascii chars (33-126)
+def randID():
+    id = ""
+    for i in range(0, 6):
+        id += chr(randint(ord('!'), ord('~')))
+    return id
+
+def find_user_by_name_and_job(name, job):
+    subdict = {'users_list' : []} #empty subdict to add to if name match found
+    for user in users['users_list']:
+       if user['name'] == name and user['job'] == job:
+          subdict['users_list'].append(user)
+    return subdict
+
+def find_user_by_name(name):
+    subdict = {'users_list' : []} #empty subdict to add to if name match found
+    for user in users['users_list']:
+       if user['name'] == name:
+          subdict['users_list'].append(user)
+    return subdict
+
+@app.route('/users', methods=['GET','POST'])
+def get_users():
+   global users
+   if request.method == 'GET':
+       search_username = request.args.get('name') #accessing val of param 'name'
+       search_job = request.args.get('job')
+       # if there is a name AND a job to search for, only return subdict of users w/ name, job
+       if search_username and search_job:
+          users = find_user_by_name_and_job(search_username, search_job);
+       elif search_username:
+          users = find_user_by_name(search_username)
+          # return {"users_list": User().find_by_name(search_username)}
+       return users
+   elif request.method == 'POST':
+       userToAdd = request.get_json() #get the data/body of the http request
+       userToAdd['id'] = randID()
+       users['users_list'].append(userToAdd)
+       resp = jsonify(userToAdd), 201
+       return resp
+
+@app.route('/users/<id>', methods=['GET', 'DELETE'])
+def get_user(id):
+    if request.method == 'GET':
+        if id:
+            for user in users['users_list']:
+                if user['id'] == id:
+                    return user #return user if found
+            return ({}) #if no user matches id, return empty dict
+        return users #if id not asked for, return all users
+    elif request.method == 'DELETE':
+        if id:
+            for user in users['users_list']:
+                if user['id'] == id:
+                    # TODO: delete user
+                    users['users_list'].remove(user)
+                    resp = jsonify(success=True) #set the http response to show success
+                    resp.status_code = 200 #optionally, you can always set a response code.
+                    return resp
+        #if id not asked for or no user id matches, error
+        resp = jsonify(success=False) #set the http response to show failure
+        return resp
