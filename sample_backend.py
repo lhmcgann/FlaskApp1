@@ -74,15 +74,12 @@ def get_users():
        if search_username and search_job:
           users = User().find_by_name_and_job(search_username, search_job);
        elif search_username:
-          # users = find_user_by_name(search_username)
           users = User().find_by_name(search_username)
        else:
           users = User().find_all()
        return {"users_list": users}
    elif request.method == 'POST':
        userToAdd = request.get_json() #get the data/body of the http request
-       # userToAdd['id'] = randID()
-       # users['users_list'].append(userToAdd)
        newUser = User(userToAdd)
        newUser.save()
        resp = jsonify(newUser), 201
@@ -95,14 +92,5 @@ def get_user(id):
         user.reload()
         return user
     elif request.method == 'DELETE':
-        # if id:
-        #     for user in users['users_list']:
-        #         if user['id'] == id:
-        #             # TODO: delete user
-        #             users['users_list'].remove(user)
-        #             resp = jsonify(success=True) #set the http response to show success
-        #             resp.status_code = 200 #optionally, you can always set a response code.
-        #             return resp
-        #if id not asked for or no user id matches, error
         resp = jsonify(success=user.remove()), 204 #set the http response to show No Content
         return resp
